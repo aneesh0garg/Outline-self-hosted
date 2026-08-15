@@ -1,0 +1,66 @@
+services:
+  outline:
+    image: docker.getoutline.com/outlinewiki/outline:latest
+    container_name: outline
+    env_file:
+      - ./docker.env
+    expose:
+      - "3000"
+    extra_hosts:
+      - "keycloak.local:host-gateway"
+    volumes:
+      - outline-storage:/var/lib/outline/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:18
+    container_name: outline-postgres
+    env_file:
+      - ./postgres.env
+    volumes:
+      - outline-database:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U outline -d outline"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:8-alpine
+    container_name: outline-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - outline-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    container_name: outline-caddy
+    ports:
+      - "9081:80"
+      - "9443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - outline
+    restart: unless-stopped
+
+volumes:
+  outline-storage:
+  outline-database:
+  outline-redis:
+  caddy-data:
+  caddy-config:

@@ -1,0 +1,24 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak-outline
+
+    command:
+      - start-dev
+      - --hostname=http://keycloak.local:5001
+      - --hostname-strict=false
+
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+
+    ports:
+      - "5001:8080"
+
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+
+    restart: unless-stopped
+
+volumes:
+  keycloak_data:

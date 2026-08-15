@@ -1,0 +1,4 @@
+outline.localhost {
+    tls internal
+    reverse_proxy outline:3000
+}

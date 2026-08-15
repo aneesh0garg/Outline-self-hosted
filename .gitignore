@@ -1,0 +1,15 @@
+# Runtime configuration and local secrets
+docker.env
+postgres.env
+*.env
+!docker.env.example
+!postgres.env.example
+
+# Local TLS material
+*.crt
+*.key
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/
