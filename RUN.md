@@ -1,5 +1,7 @@
 # Run guide
 
+For switching between localhost and Cloudflare Tunnel, use [MODES.md](MODES.md). Do not mix the hostname and OIDC settings from the two modes.
+
 ## Start the stack
 
 Start the identity provider first, then Outline:

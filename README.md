@@ -33,6 +33,8 @@ For day-to-day commands, troubleshooting, and shutdown steps, see the [run guide
 
 To expose this local stack through `pi-coding.com` without a hosting bill, follow the [Cloudflare Tunnel guide](CLOUDFLARE_TUNNEL.md).
 
+For the exact changes required when switching between localhost and Cloudflare, see [run modes](MODES.md).
+
 ## Repository layout
 
 ```text
