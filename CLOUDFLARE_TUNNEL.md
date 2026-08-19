@@ -50,6 +50,14 @@ REPLACE_WITH_YOUR_CLOUDFLARE_TUNNEL_TOKEN
 
 with the token copied from Cloudflare.
 
+Start the connector now so Cloudflare can detect it:
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.cloudflare.yml up -d cloudflared
+```
+
+Return to the Cloudflare dashboard and wait until the tunnel is **Healthy**.
+
 ## 5. Add the two public routes in Cloudflare
 
 In **Networking → Tunnels → outline-home → Routes**, add these published applications:
@@ -93,7 +101,7 @@ Valid web origin: https://outline.pi-coding.com
 
 Save the client configuration.
 
-## 8. Start the public stack
+## 8. Restart the public stack with the new settings
 
 Restart Keycloak to apply its public hostname, then start Outline and the tunnel:
 
