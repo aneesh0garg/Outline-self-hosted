@@ -7,7 +7,16 @@ This guide makes the already-running local Docker stack reachable at two public 
 
 Cloudflare Tunnel is free, but this computer must remain powered on, connected to the internet, and running Docker. It is suitable for a personal or small-team setup, not a highly available production deployment.
 
-## 1. Move `pi-coding.com` DNS to Cloudflare
+## 1. Change the Keycloak administrator password
+
+The local Keycloak stack starts with the development-only bootstrap credentials `admin` / `admin`. Before publishing `auth.pi-coding.com`:
+
+1. Open `http://localhost:5001/admin`.
+2. Sign in and select the `master` realm.
+3. Open **Users → admin → Credentials**.
+4. Set a long, unique password and save it.
+
+## 2. Move `pi-coding.com` DNS to Cloudflare
 
 1. Create or sign in to a Cloudflare account.
 2. In Cloudflare, choose **Add a site** and enter `pi-coding.com`.
@@ -16,7 +25,7 @@ Cloudflare Tunnel is free, but this computer must remain powered on, connected t
 
 Cloudflare Tunnel needs the domain zone in your Cloudflare account to create the published hostnames.
 
-## 2. Create a remotely-managed tunnel
+## 3. Create a remotely-managed tunnel
 
 1. In the Cloudflare dashboard, open **Networking → Tunnels**.
 2. Select **Create a tunnel** and name it `outline-home`.
@@ -25,7 +34,7 @@ Cloudflare Tunnel needs the domain zone in your Cloudflare account to create the
 
 Do not commit or share this token.
 
-## 3. Configure the local tunnel connector
+## 4. Configure the local tunnel connector
 
 From the repository root, create the untracked configuration file:
 
@@ -41,7 +50,7 @@ REPLACE_WITH_YOUR_CLOUDFLARE_TUNNEL_TOKEN
 
 with the token copied from Cloudflare.
 
-## 4. Add the two public routes in Cloudflare
+## 5. Add the two public routes in Cloudflare
 
 In **Networking → Tunnels → outline-home → Routes**, add these published applications:
 
@@ -52,7 +61,7 @@ In **Networking → Tunnels → outline-home → Routes**, add these published a
 
 The first service is the Outline container on the Docker network. The second reaches Keycloak through its local port `5001`.
 
-## 5. Switch local settings to the public hostnames
+## 6. Switch local settings to the public hostnames
 
 Update these lines in the untracked `docker.env` file:
 
@@ -73,7 +82,7 @@ Then edit `keycloak-outline/.env` so it contains:
 KC_HOSTNAME=https://auth.pi-coding.com
 ```
 
-## 6. Update the Keycloak client
+## 7. Update the Keycloak client
 
 Open Keycloak at `http://localhost:5001/admin`, select the `outline` realm and `outline` client, then set:
 
@@ -84,7 +93,7 @@ Valid web origin: https://outline.pi-coding.com
 
 Save the client configuration.
 
-## 7. Start the public stack
+## 8. Start the public stack
 
 Restart Keycloak to apply its public hostname, then start Outline and the tunnel:
 
