@@ -5,8 +5,9 @@ services:
 
     command:
       - start-dev
-      - --hostname=http://keycloak.local:5001
+      - --hostname=${KC_HOSTNAME:-http://keycloak.local:5001}
       - --hostname-strict=false
+      - --proxy-headers=xforwarded
 
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin

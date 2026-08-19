@@ -1,6 +1,7 @@
 # Runtime configuration and local secrets
 docker.env
 postgres.env
+docker-compose.cloudflare.yml
 *.env
 !docker.env.example
 !postgres.env.example

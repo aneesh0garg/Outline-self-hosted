@@ -31,6 +31,8 @@ This repository is intended for local development and evaluation. It is not a pr
 
 For day-to-day commands, troubleshooting, and shutdown steps, see the [run guide](RUN.md).
 
+To expose this local stack through `pi-coding.com` without a hosting bill, follow the [Cloudflare Tunnel guide](CLOUDFLARE_TUNNEL.md).
+
 ## Repository layout
 
 ```text

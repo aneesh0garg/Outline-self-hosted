@@ -100,6 +100,10 @@ Also confirm the client secret in `docker.env` matches the current Keycloak clie
 docker compose up -d --force-recreate outline
 ```
 
+### Cloudflare Tunnel is connected but sign-in fails
+
+When publishing through Cloudflare Tunnel, both Outline and Keycloak need public hostnames. Follow [CLOUDFLARE_TUNNEL.md](CLOUDFLARE_TUNNEL.md) and confirm that the Keycloak issuer, Keycloak hostname, and client redirect URI all use `https://auth.pi-coding.com` and `https://outline.pi-coding.com`.
+
 ### Reset local data
 
 To reset all persistent local data, stop the projects and remove their named volumes. This permanently deletes Outline content, PostgreSQL data, Redis data, and Keycloak configuration.

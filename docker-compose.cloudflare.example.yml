@@ -1,0 +1,17 @@
+# Copy this file to docker-compose.cloudflare.yml and replace the token below.
+# The generated file is ignored by Git because tunnel tokens are credentials.
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: outline-cloudflared
+    command:
+      - tunnel
+      - --no-autoupdate
+      - run
+      - --token
+      - REPLACE_WITH_YOUR_CLOUDFLARE_TUNNEL_TOKEN
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - outline
+    restart: unless-stopped
