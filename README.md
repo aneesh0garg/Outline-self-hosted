@@ -1,6 +1,6 @@
 # Outline — self-hosted local stack
 
-A Docker Compose setup for running [Outline](https://www.getoutline.com/) locally with PostgreSQL, Redis, Caddy HTTPS, and Keycloak for OpenID Connect (OIDC) sign-in.
+A Docker Compose setup for running [Outline](https://www.getoutline.com/) locally with PostgreSQL, Redis, and Caddy HTTPS. Authentication is provided by the shared [common-keycloak-instance](../common-keycloak-instance) service.
 
 This repository is intended for local development and evaluation. It is not a production-hardened deployment.
 
@@ -10,20 +10,17 @@ This repository is intended for local development and evaluation. It is not a pr
 | --- | --- | --- |
 | Outline | Knowledge base application | `https://outline.localhost:9443` |
 | Caddy | HTTPS reverse proxy | `http://localhost:9081`, `https://localhost:9443` |
-| Keycloak | OIDC identity provider | `http://localhost:5001` |
 | PostgreSQL | Outline database | Internal Docker network |
 | Redis | Jobs, cache, and collaboration support | Internal Docker network |
 
 ## Quick start
 
 1. Install Docker Desktop and ensure it is running.
-2. Follow the [setup guide](SETUP.md) to configure `docker.env`, Keycloak, local hostname resolution, and the local certificate.
-3. Start Keycloak, then the main stack:
+2. Start the shared Keycloak instance, then follow the [setup guide](SETUP.md) to configure `docker.env`, the Keycloak client, local hostname resolution, and the local certificate.
+3. Start Outline:
 
    ```sh
-   cd keycloak-outline
-   docker compose up -d
-   cd ..
+   (cd ../common-keycloak-instance && docker compose up -d)
    docker compose up -d
    ```
 
@@ -43,14 +40,13 @@ For the exact changes required when switching between localhost and Cloudflare, 
 ├── Caddyfile                       # Local HTTPS reverse proxy configuration
 ├── docker.env.example              # Safe configuration template
 ├── postgres.env.example            # Safe PostgreSQL configuration template
-└── keycloak-outline/
-    └── docker-compose.yml          # Local Keycloak service
+└── docker-compose.cloudflare.example.yml # Optional public tunnel connector
 ```
 
 ## Security notes
 
 - `docker.env` contains credentials and application secrets. It is deliberately ignored by Git; start from `docker.env.example`.
-- The Keycloak Compose file defaults to `admin` / `admin` for its bootstrap administrator. Change this before using the stack beyond a disposable local environment.
+- The shared Keycloak administrator and database credentials live in `../common-keycloak-instance/.env`. Change its defaults before public use.
 - Do not expose the default ports directly to the internet. Use a production-grade reverse proxy, TLS certificates, backups, SMTP, and managed secrets for a real deployment.
 
 ## License

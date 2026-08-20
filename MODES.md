@@ -1,12 +1,12 @@
 # Run modes: localhost and Cloudflare Tunnel
 
-Use one mode at a time. The active mode is determined by the untracked `docker.env` and `keycloak-outline/.env` files, plus the Keycloak client's redirect URI.
+Use one mode at a time. The active mode is determined by the untracked `docker.env` file, the shared `../common-keycloak-instance/.env` file, and the Keycloak client's redirect URI.
 
 | Setting | Localhost mode | Cloudflare mode |
 | --- | --- | --- |
 | Outline URL | `https://outline.localhost:9443` | `https://outline.pi-coding.com` |
 | Keycloak issuer | `http://keycloak.local:5001/realms/outline` | `https://auth.pi-coding.com/realms/outline` |
-| Keycloak hostname | `http://keycloak.local:5001` | `https://auth.pi-coding.com` |
+| Shared Keycloak hostname | `http://keycloak.local:5001` | `https://auth.pi-coding.com` |
 | Outline client redirect URI | `https://outline.localhost:9443/auth/oidc.callback` | `https://outline.pi-coding.com/auth/oidc.callback` |
 | Outline client web origin | `https://outline.localhost:9443` | `https://outline.pi-coding.com` |
 | Public connector | Not running | `cloudflared` running |
@@ -26,7 +26,7 @@ Use one mode at a time. The active mode is determined by the untracked `docker.e
    OIDC_ISSUER_URL=http://keycloak.local:5001/realms/outline
    ```
 
-3. Edit `keycloak-outline/.env`:
+3. Edit `../common-keycloak-instance/.env`:
 
    ```dotenv
    KC_HOSTNAME=http://keycloak.local:5001
@@ -34,10 +34,10 @@ Use one mode at a time. The active mode is determined by the untracked `docker.e
 
 4. In Keycloak, update the `outline` client's **Valid redirect URIs** and **Web origins** to the localhost values in the table above.
 
-5. Recreate Keycloak and Outline:
+5. Recreate the shared Keycloak service and Outline:
 
    ```sh
-   (cd keycloak-outline && docker compose up -d --force-recreate)
+(cd ../common-keycloak-instance && docker compose up -d --force-recreate)
    docker compose up -d --force-recreate outline
    ```
 
@@ -54,7 +54,7 @@ Before switching, ensure the Cloudflare Tunnel is configured as described in [CL
    OIDC_ISSUER_URL=https://auth.pi-coding.com/realms/outline
    ```
 
-2. Edit `keycloak-outline/.env`:
+2. Edit `../common-keycloak-instance/.env`:
 
    ```dotenv
    KC_HOSTNAME=https://auth.pi-coding.com
@@ -62,10 +62,10 @@ Before switching, ensure the Cloudflare Tunnel is configured as described in [CL
 
 3. In Keycloak, update the `outline` client's **Valid redirect URIs** and **Web origins** to the Cloudflare values in the table above.
 
-4. Recreate Keycloak and start Outline with the public connector:
+4. Recreate the shared Keycloak service and start Outline with the public connector:
 
    ```sh
-   (cd keycloak-outline && docker compose up -d --force-recreate)
+(cd ../common-keycloak-instance && docker compose up -d --force-recreate)
    docker compose -f docker-compose.yml -f docker-compose.cloudflare.yml up -d --force-recreate outline cloudflared
    ```
 
@@ -73,6 +73,6 @@ Before switching, ensure the Cloudflare Tunnel is configured as described in [CL
 
 ## Important notes
 
-- Do not commit `docker.env`, `keycloak-outline/.env`, or `docker-compose.cloudflare.yml`; they contain deployment-specific configuration and credentials.
+- Do not commit `docker.env`, `../common-keycloak-instance/.env`, or `docker-compose.cloudflare.yml`; they contain deployment-specific configuration and credentials.
 - The Keycloak `outline` client must match the mode currently in use. A mismatch causes sign-in failures or redirects to the wrong hostname.
 - When returning to localhost mode, keep the Cloudflare DNS routes in place if desired; with `cloudflared` stopped, the public hostnames simply become unavailable.

@@ -9,7 +9,7 @@ Cloudflare Tunnel is free, but this computer must remain powered on, connected t
 
 ## 1. Change the Keycloak administrator password
 
-The local Keycloak stack starts with the development-only bootstrap credentials `admin` / `admin`. Before publishing `auth.pi-coding.com`:
+The shared Keycloak stack uses credentials from `../common-keycloak-instance/.env`. Before publishing `auth.pi-coding.com`:
 
 1. Open `http://localhost:5001/admin`.
 2. Sign in and select the `master` realm.
@@ -78,13 +78,13 @@ URL=https://outline.pi-coding.com
 OIDC_ISSUER_URL=https://auth.pi-coding.com/realms/outline
 ```
 
-Create the Keycloak environment file and set its public hostname:
+Update the shared Keycloak environment file and set its public hostname:
 
 ```sh
-cp keycloak-outline/.env.example keycloak-outline/.env
+cp ../common-keycloak-instance/.env.example ../common-keycloak-instance/.env
 ```
 
-Then edit `keycloak-outline/.env` so it contains:
+Then edit `../common-keycloak-instance/.env` so it contains:
 
 ```dotenv
 KC_HOSTNAME=https://auth.pi-coding.com
@@ -103,10 +103,10 @@ Save the client configuration.
 
 ## 8. Restart the public stack with the new settings
 
-Restart Keycloak to apply its public hostname, then start Outline and the tunnel:
+Restart the shared Keycloak instance to apply its public hostname, then start Outline and the tunnel:
 
 ```sh
-(cd keycloak-outline && docker compose up -d --force-recreate)
+(cd ../common-keycloak-instance && docker compose up -d --force-recreate)
 docker compose -f docker-compose.yml -f docker-compose.cloudflare.yml up -d --force-recreate outline cloudflared
 ```
 

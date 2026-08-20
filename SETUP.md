@@ -1,6 +1,6 @@
 # Setup guide
 
-This guide configures a fresh local Outline installation using Keycloak for sign-in.
+This guide configures a fresh local Outline installation using the shared Keycloak instance for sign-in.
 
 ## Prerequisites
 
@@ -30,7 +30,7 @@ Generate two high-entropy values and set them as `SECRET_KEY` and `UTILS_SECRET`
 openssl rand -hex 32
 ```
 
-Set a strong `POSTGRES_PASSWORD` in `postgres.env`, then use the same value in `DATABASE_URL` in `docker.env`. Set `OIDC_CLIENT_SECRET` after creating the Keycloak client in step 3.
+Set a strong `POSTGRES_PASSWORD` in `postgres.env`, then use the same value in `DATABASE_URL` in `docker.env`. Set `OIDC_CLIENT_SECRET` after creating the Outline client in the shared Keycloak instance in step 3.
 
 The default local values are:
 
@@ -56,28 +56,27 @@ sudo sh -c 'echo "127.0.0.1 keycloak.local" >> /etc/hosts'
 
 On Windows, add the same entry to `C:\\Windows\\System32\\drivers\\etc\\hosts` from an elevated editor.
 
-## 3. Start and configure Keycloak
+## 3. Start and configure the shared Keycloak instance
 
-Start Keycloak first:
+Start the shared service first:
 
 ```sh
-cd keycloak-outline
-docker compose up -d
+(cd ../common-keycloak-instance && docker compose up -d)
 ```
 
-Open `http://localhost:5001/admin` and sign in with the bootstrap administrator (default `admin` / `admin` unless you changed the Compose environment).
+Open `http://localhost:5001/admin` and sign in with the administrator from `../common-keycloak-instance/.env`.
 
 Create the OIDC resources:
 
-1. Create a realm named `outline`.
-2. In that realm, create a client with Client ID `outline` and client authentication enabled.
+1. Select the shared realm (the migrated installation uses `outline`; future applications can use the same realm).
+2. Create or update the client with Client ID `outline` and client authentication enabled.
 3. Set the client protocol to OpenID Connect and enable the standard authorization-code flow.
 4. Add `https://outline.localhost:9443/auth/oidc.callback` as a valid redirect URI.
 5. Add `https://outline.localhost:9443` as a valid web origin.
 6. Copy the generated client secret into `OIDC_CLIENT_SECRET` in `docker.env`.
 7. Create at least one user, give it a password, and ensure its email and username are set.
 
-The discovery endpoint should then be available at:
+The discovery endpoint should then be available from the shared service at:
 
 ```text
 http://keycloak.local:5001/realms/outline/.well-known/openid-configuration
