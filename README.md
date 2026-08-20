@@ -32,6 +32,8 @@ To expose this local stack through `pi-coding.com` without a hosting bill, follo
 
 For the exact changes required when switching between localhost and Cloudflare, see [run modes](MODES.md).
 
+For the shared sign-in architecture and migration notes, see [Shared Keycloak integration](SHARED_KEYCLOAK.md).
+
 ## Repository layout
 
 ```text
