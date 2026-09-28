@@ -66,11 +66,15 @@ Stop the Outline containers while retaining databases and uploads:
 docker compose down
 ```
 
+This command is safe: it stops and removes containers but keeps the named Docker volumes, including the databases and uploads. **Do not add `-v`** during an ordinary shutdown.
+
 Stop the shared Keycloak stack separately only when no other project needs sign-in:
 
 ```sh
 (cd ../common-keycloak-instance && docker compose down)
 ```
+
+This is also safe for the shared Keycloak database. Never run `docker compose down -v` from `../common-keycloak-instance` unless you intentionally want to erase every realm, client, and user for every project that uses that Keycloak instance.
 
 Start them again with the commands in [Start the stack](#start-the-stack).
 
@@ -136,7 +140,7 @@ When publishing through Cloudflare Tunnel, both Outline and Keycloak need public
 
 ### Reset local Outline data
 
-To reset all persistent Outline data, stop the project and remove its named volumes. This permanently deletes Outline content, PostgreSQL data, and Redis data.
+To reset all persistent Outline data, stop the project and remove its named volumes. This is a destructive recovery command, not a normal shutdown. It permanently deletes Outline content, PostgreSQL data, and Redis data.
 
 ```sh
 docker compose down -v
