@@ -13,6 +13,24 @@ docker compose up -d
 
 Open Outline at `https://outline.localhost:9443`.
 
+## Start Cloudflare Tunnel
+
+`RUN.md` does not create a Cloudflare Tunnel. Tunnel creation is a one-time action in the Cloudflare dashboard; see [CLOUDFLARE_TUNNEL.md](CLOUDFLARE_TUNNEL.md) for that setup.
+
+After the tunnel has been created and its token has been saved in the untracked `docker-compose.cloudflare.yml` file, start its local connector with:
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.cloudflare.yml up -d cloudflared
+```
+
+Confirm that it connected:
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.cloudflare.yml logs --tail=40 cloudflared
+```
+
+Look for `Registered tunnel connection`. The Cloudflare dashboard should then report the tunnel as **Healthy**.
+
 ## Check status
 
 ```sh
